@@ -22,10 +22,10 @@ def main():
 
 @main.command()
 @click.argument("mod")
-def install(mod):
-    mod_file: Path = Path(mod)
-
-    with zipfile.ZipFile(mod_file.name, "r") as zipped:
+def install(mod: str):
+    if not mod.endswith(".scrapforge"):
+        return print("This is not a scrapforge mod!")
+    with zipfile.ZipFile(mod, "r") as zipped:
         zipped.extractall("temp/")
 
     extracted = Path("temp/")
