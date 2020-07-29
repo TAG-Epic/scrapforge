@@ -54,18 +54,20 @@ def applyPatches(patch_dir: Path):
     for patch in patch_dir.glob("*"):
         if patch.is_dir():
             return applyPatches(patch)
+
         with patch.open("rb") as f:
             with applied_patch_path.open("wb+") as patch_file:
                 patch_file.write(f.read())
 
         os.chdir(SCRAPMECHANIC_PATH)
         print(f"Installing patch {patch.name}")
-        f = BytesIO()
+        devnull = open(os.devnull, "w+")
         try:
-            output = run(["git", "apply", "scrapforge.patch"], stderr=f, stdout=f)
+            run(["git", "apply", "scrapforge.patch"], stderr=devnull, stdout=devnull)
         except:
             print(f"Mod install failed!")
             raise SystemExit()
+        del devnull
         print("Patch installed!")
         os.chdir(current_dir)
 
